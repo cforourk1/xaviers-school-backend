@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS professors CASCADE;
-DROP TABLE IF EXISTS departments CASCADE;
+DROP TABLE IF EXISTS mutants CASCADE;
+DROP TABLE IF EXISTS teams CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
 CREATE TABLE users (
@@ -8,19 +8,21 @@ CREATE TABLE users (
   password text NOT NULL
 );
 
-CREATE TABLE departments (
+CREATE TABLE teams (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   name text NOT NULL,
-  contact_email text NOT NULL,
   description text NOT NULL,
+  base_of_operations text NOT NULL,
   image_url text NOT NULL
 );
 
-CREATE TABLE professors (
+CREATE TABLE mutants (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   name text NOT NULL,
-  contact_email text NOT NULL,
+  alias text NOT NULL,
   biography text NOT NULL,
+  power_description text NOT NULL,
   image_url text NOT NULL,
-  department_id uuid NOT NULL REFERENCES departments(id) ON DELETE CASCADE
+  status text NOT NULL,
+  team_id uuid NOT NULL REFERENCES teams(id) ON DELETE CASCADE
 );
