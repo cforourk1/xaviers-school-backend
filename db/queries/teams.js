@@ -44,3 +44,4 @@ export async function getTeamWithMutants(id) {
   const { rows: [team] } = await db.query(sql, [id]);
   return team;
 }
+
