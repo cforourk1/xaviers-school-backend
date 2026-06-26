@@ -1,10 +1,8 @@
-import db from "#db/client";
-
-// adds a mutant to a team via junction table
-export async function createTeamMutant(teamId, mutantId) {
+// remove mutant from team
+export async function deleteTeamMutant(teamId, mutantId) {
   const sql = `
-  INSERT INTO teams_mutants (team_id, mutant_id)
-  VALUES ($1, $2)
+  DELETE FROM teams_mutants
+  WHERE team_id = $1 AND mutant_id = $2
   RETURNING *
   `;
   const { rows: [teamMutant] } = await db.query(sql, [teamId, mutantId]);

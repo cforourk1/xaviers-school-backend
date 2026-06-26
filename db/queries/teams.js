@@ -45,3 +45,25 @@ export async function getTeamWithMutants(id) {
   return team;
 }
 
+// update team
+export async function updateTeam(id, name, baseOfOperations, description, imageUrl) {
+  const sql = `
+  UPDATE teams
+  SET name = $1, base_of_operations = $2, description = $3, image_url = $4
+  WHERE id = $5
+  RETURNING *
+  `;
+  const { rows: [team] } = await db.query(sql, [name, baseOfOperations, description, imageUrl, id]);
+  return team;
+}
+
+// delete team
+export async function deleteTeam(id) {
+  const sql = `
+  DELETE FROM teams
+  WHERE id = $1
+  RETURNING *
+  `;
+  const { rows: [team] } = await db.query(sql, [id]);
+  return team;
+}
