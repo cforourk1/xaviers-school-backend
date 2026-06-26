@@ -1,32 +1,24 @@
 import express from "express";
-import { getDepartmentsByProfessorId } from "#db/queries/teams";
-import { getProfessors, getProfessorById } from "#db/queries/mutants";
-import requireUser from "#middleware/requireUser";
+import { getMutants, getMutantById } from "#db/queries/mutants";
 
 const router = express.Router();
 export default router;
 
-//get Professors
+// get all mutants
 router.get("/", async (req, res) => {
-  const professors = await getProfessors();
-  res.send(Professors);
+  const mutants = await getMutants();
+  res.send(mutants);
 });
 
-
-//get Professor by its id number
+// router.param handles lookup and 404 for all /:id routes
 router.param("id", async (req, res, next, id) => {
-  const professor = await getProfessorById(id);
-  if (!professor) return res.status(404).send("Professor not found.");
-  req.professor = professor;
+  const mutant = await getMutantById(id);
+  if (!mutant) return res.status(404).send("Mutant not found.");
+  req.mutant = mutant;
   next();
 });
 
-//get Departments associated with that Professor id
+// get single mutant with team info
 router.get("/:id", (req, res) => {
-  res.send(req.professor);
-});
-
-router.get("/:id/Departments", requireUser, async (req, res) => {
-  const departments = await getDepartmentsByProfessorId(req.Professor.id, req.user.id);
-  res.send(departments);
+  res.send(req.mutant);
 });

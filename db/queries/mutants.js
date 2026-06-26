@@ -1,34 +1,34 @@
 import db from "#db/client";
 
-// create professor
-export async function createProfessor(name, contactEmail, biography, imageUrl, departmentId) {
+// create mutant
+export async function createMutant(name, alias, status, powerDescription, biography,  imageUrl, teamId) {
   const sql = `
-  INSERT INTO professors (name, contact_email, biography, image_url, department_id)
-  VALUES ($1, $2, $3, $4, $5)
+  INSERT INTO mutants (name, alias, status, power_description, biography, image_url, team_id)
+  VALUES ($1, $2, $3, $4, $5, $6, $7)
   RETURNING *
   `;
-  const { rows: [professor] } = await db.query(sql, [name, contactEmail, biography, imageUrl, departmentId]);
-  return professor;
+  const { rows: [mutant] } = await db.query(sql, [name, alias, status, powerDescription, biography, imageUrl, teamId]);
+  return mutant;
 }
 
-// get all professors
-export async function getProfessors() {
+// get all mutants
+export async function getMutants() {
   const sql = `
   SELECT *
-  FROM professors
+  FROM mutants
   `;
-  const { rows: professors } = await db.query(sql);
-  return professors;
+  const { rows: mutants } = await db.query(sql);
+  return mutants;
 }
 
-// get professor by id with their department
-export async function getProfessorById(id) {
+// get mutant by id with their team
+export async function getMutantById(id) {
   const sql = `
-  SELECT professors.*, departments.name AS department_name
-  FROM professors
-  JOIN departments ON professors.department_id = departments.id
-  WHERE professors.id = $1
+  SELECT mutants.*, teams.name AS team_name
+  FROM mutants
+  JOIN teams ON mutants.team_id = teams.id
+  WHERE mutants.id = $1
   `;
-  const { rows: [professor] } = await db.query(sql, [id]);
-  return professor;
+  const { rows: [mutant] } = await db.query(sql, [id]);
+  return mutant;
 }
