@@ -45,7 +45,19 @@ router.put("/:id", requireUser, requireBody(["name", "alias", "status", "power_d
   res.send(mutant);
 });
 
-/* delete a mutant - requires user login 
+
+// get all teams a mutant belongs to
+
+router.get("/:id/teams" , async (req, res) => {
+  const teams = await getTeamsByMutantId(req.mutant.id);
+  res.send(teams);
+});
+
+
+
+
+
+/* delete a mutant - requires user login
 */
 router.delete("/:id", requireUser, async (req, res) => {
   await deleteMutant(req.mutant.id);
