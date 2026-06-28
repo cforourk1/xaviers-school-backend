@@ -10,7 +10,10 @@ await db.end();
 console.log("🌱 Database seeded.");
 
 async function seed() {
-  await createUser("admin", "Hlkjhdsfn873jhj2");
+await createUser("ProfessorX", "MarkWishesHeWereProfX");
+await db.query(`
+  UPDATE users SET role = 'admin' WHERE username = 'ProfessorX'
+`);
 
   const xmen = await createTeam(
     "X-Men",
