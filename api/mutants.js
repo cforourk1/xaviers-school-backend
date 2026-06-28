@@ -1,5 +1,5 @@
 import express from "express";
-import { getMutants, getMutantById, createMutant, updateMutant, deleteMutant } from "#db/queries/mutants";
+import { getMutants, getMutantById, createMutant, updateMutant, deleteMutant, getTeamsByMutantId } from "#db/queries/mutants";
 import requireUser from "#middleware/requireUser";
 import requireBody from "#middleware/requireBody";
 
