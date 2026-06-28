@@ -21,7 +21,7 @@ export async function getMutants() {
   return mutants;
 }
 
-// get a mutant by id 
+// get a mutant by id
 export async function getMutantById(id) {
   const sql = `
   SELECT *
@@ -53,4 +53,18 @@ export async function deleteMutant(id) {
   `;
   const { rows: [mutant] } = await db.query(sql, [id]);
   return mutant;
+}
+
+// get all the teams a mutant is in
+
+export async function getTeamsByMutantId(id) {
+const sql = `
+SELECT teams.*
+FROM teams
+JOIN teams_mutants ON teams_mutants.team_id = teams.id
+WHERE teams_mutants.mutant_id = $1
+`;
+
+const { rows: teams } = await db.query(sql, [id]);
+return teams;
 }
