@@ -40,19 +40,18 @@ async function seed() {
     "/images/xforce.jpg"
   );
 
-  // Create all mutants
-  const xavier = await createMutant("Charles Xavier", "Professor X", "active", "Telepathy, mind control, psychic blasts", "The world's most powerful telepath and founder of the X-Men.", "/images/xavier.jpg");
-  const beast = await createMutant("Hank McCoy", "Beast", "active", "Superhuman strength, agility, and intellect", "A brilliant scientist and agile fighter.", "/images/beast.jpg");
-  const havok = await createMutant("Alex Summers", "Havok", "active", "Plasma blasts, cosmic energy absorption", "Brother of Cyclops, Alex can absorb cosmic energy and release it as powerful plasma blasts.", "/images/havok.jpg");
-  const banshee = await createMutant("Sean Cassidy", "Banshee", "active", "Sonic scream, flight via screaming", "An Irish mutant who can fly and disorient enemies using his powerful sonic scream.", "/images/banshee.jpg");
-  const angel = await createMutant("Angel Salvadore", "Angel", "active", "Flight, acid spit", "A young mutant with insectoid wings who can fly and spit acid at enemies.", "/images/angel.jpg");
-  const magneto = await createMutant("Erik Lehnsherr", "Magneto", "active", "Master of magnetism, can manipulate all forms of metal", "A Holocaust survivor who became the most powerful mutant on Earth.", "/images/magneto.jpg");
-  const mystique = await createMutant("Raven Darkholme", "Mystique", "active", "Shapeshifting, retarded aging, enhanced agility", "A shapeshifter who left the X-Men to join Magneto, later returning as a reluctant ally.", "/images/mystique.jpg");
-  const azazel = await createMutant("Azazel", "Azazel", "deceased", "Teleportation, wall crawling, sword mastery", "A demonic-looking mutant and one of Magneto's most dangerous allies.", "/images/azazel.jpg");
-  const shaw = await createMutant("Sebastian Shaw", "Black King", "deceased", "Kinetic energy absorption and redirection", "The ruthless leader of the Hellfire Club.", "/images/shaw.jpg");
-  const emma = await createMutant("Emma Frost", "White Queen", "active", "Telepathy, diamond form transformation", "A powerful telepath who defected from the Hellfire Club to join the X-Men.", "/images/emma.jpg");
-  const riptide = await createMutant("Janos Quested", "Riptide", "deceased", "Whirlwind generation, projectile creation", "A Hellfire Club enforcer who can spin at superhuman speeds.", "/images/riptide.jpg");
-  const wolverine = await createMutant("James Howlett", "Wolverine", "active", "Adamantium claws, accelerated healing factor, enhanced senses", "A gruff Canadian mutant with a mysterious past. Has served on both the X-Men and X-Force.", "/images/wolverine.jpg");
+const xavier = await createMutant("Charles Xavier", "Professor X", "active", "Telepathy, mind control, psychic blasts", "The world's most powerful telepath and founder of the X-Men.", "/images/profX.jpeg");
+const beast = await createMutant("Hank McCoy", "Beast", "active", "Superhuman strength, agility, and intellect", "A brilliant scientist and agile fighter.", "/images/beast.jpg");
+const havok = await createMutant("Alex Summers", "Havok", "active", "Plasma blasts, cosmic energy absorption", "Brother of Cyclops, Alex can absorb cosmic energy and release it as powerful plasma blasts.", "/images/havok.jpg");
+const banshee = await createMutant("Sean Cassidy", "Banshee", "active", "Sonic scream, flight via screaming", "An Irish mutant who can fly and disorient enemies using his powerful sonic scream.", "/images/banshee.jpg");
+const angel = await createMutant("Angel Salvadore", "Angel", "active", "Flight, acid spit", "A young mutant with insectoid wings who can fly and spit acid at enemies.", "/images/angel.jpg");
+const magneto = await createMutant("Erik Lehnsherr", "Magneto", "active", "Master of magnetism, can manipulate all forms of metal", "A Holocaust survivor who became the most powerful mutant on Earth.", "/images/magneto.jpg");
+const mystique = await createMutant("Raven Darkholme", "Mystique", "active", "Shapeshifting, retarded aging, enhanced agility", "A shapeshifter who left the X-Men to join Magneto, later returning as a reluctant ally.", "/images/raven.png");
+const azazel = await createMutant("Azazel", "Azazel", "deceased", "Teleportation, wall crawling, sword mastery", "A demonic-looking mutant and one of Magneto's most dangerous allies.", "/images/azazel.png");
+const shaw = await createMutant("Sebastian Shaw", "Black King", "deceased", "Kinetic energy absorption and redirection", "The ruthless leader of the Hellfire Club.", "/images/Shaw.png");
+const emma = await createMutant("Emma Frost", "White Queen", "active", "Telepathy, diamond form transformation", "A powerful telepath who defected from the Hellfire Club to join the X-Men.", "/images/frost.png");
+const riptide = await createMutant("Janos Quested", "Riptide", "deceased", "Whirlwind generation, projectile creation", "A Hellfire Club enforcer who can spin at superhuman speeds.", "/images/riptide.jpeg");
+const wolverine = await createMutant("James Howlett", "Wolverine", "active", "Adamantium claws, accelerated healing factor, enhanced senses", "A gruff Canadian mutant with a mysterious past. Has served on both the X-Men and X-Force.", "/images/wolverine.png");
 
   // X-Men memberships
   await createTeamMutant(xmen.id, xavier.id);
