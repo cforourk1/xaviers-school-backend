@@ -6,6 +6,7 @@ import usersRouter from "#api/users";
 import teamsRouter from "#api/teams";
 import mutantsRouter from "#api/mutants";
 
+
 const app = express();
 export default app;
 
@@ -17,6 +18,7 @@ app.use(getUserFromToken);
 app.use("/users", usersRouter);
 app.use("/teams", teamsRouter);
 app.use("/mutants", mutantsRouter);
+app.use("/images", express.static("public/images"));
 
 app.use((err, req, res, next) => {
   switch (err.code) {
