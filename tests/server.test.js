@@ -3,7 +3,10 @@ import db from "#db/client";
 import request from "supertest";
 import { afterAll, beforeAll, describe, expect, it, test } from "vitest";
 
+// regular user token — can create things but not edit seeded data
 let token;
+// admin token — ProfessorX, can edit and delete anything
+let adminToken;
 let lastTeam;
 let lastMutant;
 
@@ -16,6 +19,13 @@ beforeAll(async () => {
 
   const { rows: [mutant] } = await db.query("SELECT * FROM mutants ORDER BY name DESC LIMIT 1");
   lastMutant = mutant;
+
+  // log in as ProfessorX (seeded admin) to get admin token
+  const adminLogin = await request(app).post("/users/login").send({
+    username: "ProfessorX",
+    password: "MarkWishesHeWereProfX",
+  });
+  adminToken = adminLogin.text;
 });
 
 afterAll(async () => {
@@ -58,6 +68,7 @@ describe("users", () => {
       });
       expect(response.status).toBe(200);
       expect(response.text).toMatch(/\w+\.\w+\.\w+/);
+      // store regular user token for use in later tests
       token = response.text;
     });
 
@@ -72,6 +83,28 @@ describe("users", () => {
     it("sends 400 if request body is missing required fields", async () => {
       const response = await request(app).post("/users/login").send({});
       expect(response.status).toBe(400);
+    });
+  });
+
+  describe("GET /users/me", () => {
+    it("sends 401 if user is not logged in", async () => {
+      const response = await request(app).get("/users/me");
+      expect(response.status).toBe(401);
+    });
+
+    it("sends the current user object when logged in", async () => {
+      const response = await request(app)
+        .get("/users/me")
+        .set("Authorization", `Bearer ${token}`);
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty("username", "testmutant99");
+    });
+
+    it("includes the role field", async () => {
+      const response = await request(app)
+        .get("/users/me")
+        .set("Authorization", `Bearer ${token}`);
+      expect(response.body).toHaveProperty("role");
     });
   });
 });
@@ -147,7 +180,20 @@ describe("teams", () => {
       expect(response.status).toBe(401);
     });
 
-    it("updates the team", async () => {
+    it("sends 403 if regular user tries to edit a seeded team", async () => {
+      const response = await request(app)
+        .put("/teams/" + lastTeam.id)
+        .send({
+          name: "Hacked",
+          base_of_operations: "Hacked",
+          description: "Hacked",
+          image_url: "/images/test.jpg",
+        })
+        .set("Authorization", `Bearer ${token}`);
+      expect(response.status).toBe(403);
+    });
+
+    it("updates the team as admin", async () => {
       const response = await request(app)
         .put("/teams/" + lastTeam.id)
         .send({
@@ -156,7 +202,7 @@ describe("teams", () => {
           description: "Updated description",
           image_url: "/images/updated.jpg",
         })
-        .set("Authorization", `Bearer ${token}`);
+        .set("Authorization", `Bearer ${adminToken}`);
       expect(response.status).toBe(200);
       expect(response.body.name).toBe("Updated Team Name");
     });
@@ -168,13 +214,13 @@ describe("teams", () => {
       expect(response.status).toBe(401);
     });
 
-    it("deletes the team", async () => {
+    it("deletes the team as admin", async () => {
       const { rows: [newTeam] } = await db.query(
         "INSERT INTO teams (name, base_of_operations, description, image_url) VALUES ('Temp Team', 'Temp', 'Temp', '/images/temp.jpg') RETURNING *"
       );
       const response = await request(app)
         .delete("/teams/" + newTeam.id)
-        .set("Authorization", `Bearer ${token}`);
+        .set("Authorization", `Bearer ${adminToken}`);
       expect(response.status).toBe(204);
     });
   });
@@ -240,6 +286,8 @@ describe("mutants", () => {
       expect(response.status).toBe(201);
       expect(response.body).toHaveProperty("id");
       expect(response.body.alias).toBe("Tester");
+      // created_by should be set to the logged in user
+      expect(response.body).toHaveProperty("created_by");
     });
   });
 
@@ -256,7 +304,22 @@ describe("mutants", () => {
       expect(response.status).toBe(401);
     });
 
-    it("updates the mutant", async () => {
+    it("sends 403 if regular user tries to edit a seeded mutant", async () => {
+      const response = await request(app)
+        .put("/mutants/" + lastMutant.id)
+        .send({
+          name: "Hacked",
+          alias: "Hacked",
+          status: "active",
+          power_description: "Hacked",
+          biography: "Hacked",
+          image_url: "/images/test.jpg",
+        })
+        .set("Authorization", `Bearer ${token}`);
+      expect(response.status).toBe(403);
+    });
+
+    it("updates the mutant as admin", async () => {
       const response = await request(app)
         .put("/mutants/" + lastMutant.id)
         .send({
@@ -267,7 +330,7 @@ describe("mutants", () => {
           biography: "Updated biography",
           image_url: "/images/updated.jpg",
         })
-        .set("Authorization", `Bearer ${token}`);
+        .set("Authorization", `Bearer ${adminToken}`);
       expect(response.status).toBe(200);
       expect(response.body.alias).toBe("Updated Alias");
     });
@@ -279,13 +342,13 @@ describe("mutants", () => {
       expect(response.status).toBe(401);
     });
 
-    it("deletes the mutant", async () => {
+    it("deletes the mutant as admin", async () => {
       const { rows: [newMutant] } = await db.query(
         "INSERT INTO mutants (name, alias, status, power_description, biography, image_url) VALUES ('Temp', 'Temp', 'active', 'Temp', 'Temp', '/images/temp.jpg') RETURNING *"
       );
       const response = await request(app)
         .delete("/mutants/" + newMutant.id)
-        .set("Authorization", `Bearer ${token}`);
+        .set("Authorization", `Bearer ${adminToken}`);
       expect(response.status).toBe(204);
     });
   });
@@ -303,14 +366,22 @@ describe("teams/:id/mutants", () => {
       expect(response.status).toBe(401);
     });
 
-    it("adds a mutant to a team", async () => {
+    it("sends 403 if regular user tries to add mutant to team", async () => {
+      const response = await request(app)
+        .post("/teams/" + lastTeam.id + "/mutants")
+        .send({ mutantId: lastMutant.id })
+        .set("Authorization", `Bearer ${token}`);
+      expect(response.status).toBe(403);
+    });
+
+    it("adds a mutant to a team as admin", async () => {
       const { rows: [newMutant] } = await db.query(
         "INSERT INTO mutants (name, alias, status, power_description, biography, image_url) VALUES ('Junction Test', 'JT', 'active', 'Testing', 'Testing junction', '/images/test.jpg') RETURNING *"
       );
       const response = await request(app)
         .post("/teams/" + lastTeam.id + "/mutants")
         .send({ mutantId: newMutant.id })
-        .set("Authorization", `Bearer ${token}`);
+        .set("Authorization", `Bearer ${adminToken}`);
       expect(response.status).toBe(201);
       expect(response.body).toHaveProperty("team_id", lastTeam.id);
       expect(response.body).toHaveProperty("mutant_id", newMutant.id);
