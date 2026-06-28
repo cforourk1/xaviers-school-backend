@@ -7,7 +7,8 @@ DROP TABLE IF EXISTS users CASCADE;
 CREATE TABLE users (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   username text UNIQUE NOT NULL,
-  password text NOT NULL
+  password text NOT NULL,
+  role text NOT NULL DEFAULT 'user'
 );
 
 CREATE TABLE teams (
