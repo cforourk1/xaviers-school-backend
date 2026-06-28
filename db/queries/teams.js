@@ -1,13 +1,13 @@
 import db from "#db/client";
 
 // create team
-export async function createTeam(name, baseOfOperations, description, imageUrl) {
+export async function createTeam(name, baseOfOperations, description, imageUrl, createdBy) {
   const sql = `
-  INSERT INTO teams (name, base_of_operations, description, image_url)
-  VALUES ($1, $2, $3, $4)
+  INSERT INTO teams (name, base_of_operations, description, image_url, created_by)
+  VALUES ($1, $2, $3, $4, $5)
   RETURNING *
   `;
-  const { rows: [team] } = await db.query(sql, [name, baseOfOperations, description, imageUrl]);
+  const { rows: [team] } = await db.query(sql, [name, baseOfOperations, description, imageUrl, createdBy]);
   return team;
 }
 

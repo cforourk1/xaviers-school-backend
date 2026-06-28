@@ -16,7 +16,8 @@ CREATE TABLE teams (
   name text NOT NULL,
   base_of_operations text NOT NULL,
   description text NOT NULL,
-  image_url text NOT NULL
+  image_url text NOT NULL,
+  created_by uuid REFERENCES users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE mutants (
@@ -26,7 +27,8 @@ CREATE TABLE mutants (
   status text NOT NULL,
   power_description text NOT NULL,
   biography text NOT NULL,
-  image_url text NOT NULL
+  image_url text NOT NULL,
+  created_by uuid REFERENCES users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE teams_mutants (
