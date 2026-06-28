@@ -21,6 +21,7 @@ export async function getMutants() {
   return mutants;
 }
 
+// get a mutant by id 
 export async function getMutantById(id) {
   const sql = `
   SELECT *
